@@ -1,0 +1,675 @@
+{
+	"info": {
+		"_postman_id": "476624fa-672b-49e3-b713-1c416296a78f",
+		"name": "secure-boat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Post public boat",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cab4f130-7dc7-422e-9b13-55a94d1f8323",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "74978ec8-e283-4714-978a-56c50e98f20f",
+						"exec": [
+							"pm.collectionVariables.set(\"owner_id_1\", pm.response.json().owner);",
+							"pm.collectionVariables.set(\"boat_id_1\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Sea Witch\",\n    \"type\": \"Catamaran\",\n    \"length\": 28,\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/boats",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post private boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a4827566-53f4-4428-a8b2-9269a98196e6",
+						"exec": [
+							"pm.collectionVariables.set(\"boat_id_2\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Sea Wizard\",\n    \"type\": \"Catamaran\",\n    \"length\": 28,\n    \"public\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/boats",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post boat invalid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1a863da5-a8d6-42db-88c0-749b5536b90f",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BAD_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Sea Wizard\",\n    \"type\": \"Catamaran\",\n    \"length\": 28,\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/boats",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get boats with owner id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52e3f3be-42b7-4383-9564-ca791d154655",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"one boat returned\", function () {",
+							"   //Check for appropriate content including self attribute",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.be.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/owners/{{owner_id_1}}/boats",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"owners",
+						"{{owner_id_1}}",
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post public boat from other owner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ba91851c-cf56-4b02-9703-febcc52ab951",
+						"exec": [
+							"pm.collectionVariables.set(\"boat_id_3\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Sea Homeboy\",\n    \"type\": \"raft\",\n    \"length\": 4,\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/boats",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get boats valid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0508b046-51aa-4b6e-875e-4d023dbd7302",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"two boats returned\", function () {",
+							"   //Check for appropriate content including self attribute",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.be.equal(2);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get boats invalid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "934fb8e0-5223-4f4f-bee4-56c222123df8",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"two boats returned\", function () {",
+							"   //Check for appropriate content including self attribute",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.be.equal(2);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BAD_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat 1 invalid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6e05cd1a-b321-43d4-b9f1-024006918649",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BAD_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats/{{boat_id_1}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats",
+						"{{boat_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat 1 missing JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1fd68cb-434a-40fe-8b69-9227d282ad58",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats/{{boat_id_1}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats",
+						"{{boat_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat 1 wrong owner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a4564383-2012-4758-987d-8bcc20032f2c",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats/{{boat_id_1}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats",
+						"{{boat_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "78dd4464-4d74-449b-bc4d-ce2fc3a8bec2",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats/{{boat_id_1}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats",
+						"{{boat_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat 1 no longer exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "be3249d8-4083-4149-a31b-8adc9b8ae774",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats/{{boat_id_1}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats",
+						"{{boat_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "32deb0f0-054e-4e79-a8b1-ceaf0f01603b",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats/{{boat_id_2}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats",
+						"{{boat_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fb07d767-fbac-42e0-bd24-42d4c74561fb",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/boats/{{boat_id_3}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"boats",
+						"{{boat_id_3}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "b696b6f9-126d-422b-b85a-fb691173ecc6",
+			"key": "owner_id",
+			"value": ""
+		},
+		{
+			"id": "160280f2-032c-46f9-ac22-a032e0680b75",
+			"key": "boat_id_1",
+			"value": ""
+		},
+		{
+			"id": "2c5bb4d1-6613-46a0-b399-1a1b6fdc9fa2",
+			"key": "owner_id_1",
+			"value": ""
+		},
+		{
+			"id": "9590ceee-c2a6-4096-87af-cb93e1188a2f",
+			"key": "boat_id_2",
+			"value": ""
+		},
+		{
+			"id": "d3b9e1e1-87df-46ee-953f-eff89cffbf1c",
+			"key": "boat_id_3",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}

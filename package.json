@@ -1,0 +1,30 @@
+{
+  "name": "recipes-api",
+  "version": "1.0.0",
+  "description": "A simple node app for storing recipes",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anderja8/recipes-api.git"
+  },
+  "author": "Jacob Anderson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anderja8/recipes-api/issues"
+  },
+  "homepage": "https://github.com/anderja8/recipes-api#readme",
+  "dependencies": {
+    "@google-cloud/connect-datastore": "^5.0.1",
+    "@google-cloud/datastore": "^6.3.0",
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "google-auth-library": "^6.1.3"
+  }
+}
