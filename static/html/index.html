@@ -3,86 +3,35 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Secure Boat API</title>
+    <title>Recipes API</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
-    <h1 style="text-align:center;">Welcome to the secure boat demo API</h1>
-    <h3 style="text-align:center;">(with help from Google)</h3>
-    <h4>Auth Links</h4>
+    <h1 style="text-align:center;">Welcome to the Recipes API</h1>
+    <h4>Site Links</h4>
     <ul>
-        <li>Click <a href="/user-info">here</a> to get a JWT</li>
-        <li>Click <a href="/privacy">here</a> to read the privacy statement for this site</li>
+        <li>Click <a href="/user-info">JWT Generation</a> (requires a Google account)</li>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li>Postman test <a href="/pm-collection"  target='_blank'>collection</a> and <a href='/pm-env' target='_blank'>environment</a></li>
+        <li><a href="/documentation" target="_blank">Usage Documentation</a></li>
     </ul>
     <h4>Site Description</h4>
     <p>
-        The purpose of this app is to display basic API functionality used in conjunction with standard
-        authentication and authorization tools for my CS493 course. The app accomplishes these goals by
-        using Oauth 2.0 flow to get a JWT from
+        The purpose of this app is to provide a convenient API for storing, sharing, and learning different recipes.
+        You can use this app for any recipes that requires directions and ingredients, from coffees to quiches. You
+        can do this by posting a recipe, and then adding ingredients linked to the recipe. You can choose to set your
+        recipe to public or private. Only you can see private recipes, but anyone can view public recipes. You can user-info
+        this to learn new recipes! For full usage instructions, please read the documentation linked above.
     </p>
-    <h4>Use Instructions</h4>
+    <h4>JWT Instructions</h4>
     <p>
-        To use this site, first ensure you have a working Google account. Then, click the link at the bottom
+        To use this site, first ensure you have a working Google account. Then, click the "JWT Generation" link at the top
         of this page, and follow the steps to login. Once authenticated, you will be redirected to a page that
         displays your JWT. Copy it, and include it in the "Authorization" header as "Bearer &ltYour JWT&gt".
         <br />
-        You are now ready to start making requests to the api. Please see below for the available routes and
-        their behavior.
-    </p>
-    <h4>API Routes</h4>
-    <li>POST /boats
-        <ul>
-            <li>Requires a valid JWT in the Authorization header</li>
-            <li>Creates a boat with owner set to the owner of the supplied JWT and returns 201 status</li>
-            <li>Returns 401 status code for missing or invalid JWTs.</li>
-            <li>The request body must be a JSON object with the properties
-                <ul>
-                    <li>name</li>
-                    <li>type</li>
-                    <li>length</li>
-                    <li>public #used to determine if just the JWT owner can see the boat, or if it will be publicly
-                        viewable</li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-    <li>GET /owners/:owner_id/boats
-        <ul>
-            <li>Returns 200 status code and all public boats for the specified owner_id regardless of whether the
-                request has a valid or invalid JWT or whether a JWT is missing.</li>
-            <li>If the owner doesn't have any public boats, returns 200 status and an empty array.</li>
-        </ul>
-    </li>
-    <li>GET /boats
-        <ul>
-            <li>If the supplied JWT is valid, returns 200 status code and all boats whose owner matches the supplied
-                JWT</li>
-            <li>If no JWT is provided or an invalid JWT is provided, returns status 200 and all public boats</li>
-        </ul>
-    </li>
-    <li>DELETE /boats/:boat_id
-        <ul>
-            <li>Deletes the boat and returns 204 status code in case of success</li>
-            <li>Requires a valid JWT in the Authorization header</li>
-            <li>Returns 401 status code for missing or invalid JWTs.</li>
-            <li>Returns 403 status code
-                <ul>
-                    <li>If the JWT is valid but boat_id is owned by someone else</li>
-                    <li>If the JWT is valid but no boat with this boat_id exists</li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-    <h4>Postman Tests</h4>
-    <p>
-        The postman test suite for this app provides a good reference for request format and expected behavior.
-        Please note that the test environment requires two JWTs with different owners, saved as JWT_1 and JWT_2 in the
-        environment, in order for tests to pass.
-    <ul>
-        <li><a href='/pm-env' target='_blank'>Environment</a></li>
-        <li><a href='pm-collection' target='_blank'>Test Collection</a></li>
-    </ul>
+        You are now ready to start making requests to the api. Please see the "Usage Documenation" link at the top of this
+        page for full documenation on all routes in the API.
     </p>
 </body>
 

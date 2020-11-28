@@ -1,4 +1,4 @@
-const config = require('./config.js');
+const config = require('../config.js');
 const url = require('url');
 const axios = require('axios');
 const crypto = require('crypto');
@@ -79,7 +79,7 @@ function handleCallback(req, res) {
 
     var sess = req.session;
     if (req.query.state != sess.state) {
-        res.status(500).sjend({"Error": "invalid state received from auth provider"});
+        res.status(500).send({"Error": "invalid state received from auth provider"});
     }
     
     const code = req.query.code;

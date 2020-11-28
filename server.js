@@ -5,11 +5,13 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const router = express.Router();
-const { handleCallback, verifyJWT } = require('./auth.js');
-const { serveInfo } = require('./handlers/user-info.js');
+const { handleCallback, verifyJWT } = require('./middleware/auth.js');
+const { UserHandlers } = require('./handlers/users.js');
+const userHandlers = new UserHandlers();
 const config = require('./config.js');
 const { RecipeHandlers } = require('./handlers/recipes.js');
 const recipeHandlers = new RecipeHandlers();
+const { verifyJSONAccepts } = require('./middleware/accept.js');
 
 const app = express();
 
@@ -39,21 +41,33 @@ router.get('/privacy', function(req, res) {
     res.status(200).sendFile(__dirname + "/static/html/privacy.html");
 });
 
-// postman files
+// postman and documentation files
+// TODO add these files
+/*
 router.get('/pm-env', function(req, res) {
     res.status(200).sendFile(__dirname + "/static/postman/secure-boat.postman_environment.json");
 });
 router.get('/pm-collection', function(req, res) {
     res.status(200).sendFile(__dirname + "/static/postman/secure-boat.postman_collection.json");
 });
+router.get('/documentation', function(req, res) {
+    res.status(200).sendFile(__dirname + "/static/recipes_api_documentation.pdf");
+});
+*/
 
 // oauth callback
 router.get('/oauth2callback', handleCallback);
 
-// user info
-router.get('/user-info', serveInfo);
+// jwt generation
+router.get('/user-info', userHandlers.getJWT);
 
 // api routes
+//users
+router.get('/users', verifyJSONAccepts, userHandlers.getUsers);
+router.delete('/users/:user_id', verifyJSONAccepts, verifyJWT, userHandlers.deleteUsers);
+//recipes
+
+//ingredients
 
 
 //Start up the server
