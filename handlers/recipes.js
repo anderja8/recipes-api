@@ -1,11 +1,44 @@
-const {GCloudDatastore} = require('../datastore/datastore.js');
+const { GCloudDatastore } = require('../datastore/datastore.js');
 gCloudDatastore = new GCloudDatastore();
+const { generateSelf } = require('./handlerHelpers.js');
 
-const BOAT_DATASTORE_KEY = 'RECIPE';
-//const ROOT_URL = '';
+const RECIPE_DATASTORE_KEY = 'RECIPE';
 const ROOT_URL = 'http://localhost:8080';
 
 class RecipeHandlers {
+    async postRecipe(req, res) {
+        //Verify JWT was OK
+        if (req.error) {
+            return res.status(401).send({'Error': req.error});
+        }
+
+        //Verify the request contains the required attributes recipe
+        if (!req.body.name || !req.body.description || req.body.public === null) {
+            return res.status(400).send({'Error': 'The request object is missing at least one of the required attributes'});
+        }
+        if (!req.body.instructions) {
+            req.body.instructions = "";
+        }
+
+        //Save the recipe
+        newRecipe = {
+            "name": req.body.name,
+            "description": req.body.description,
+            "instructions": req.body.instructions,
+            "owner_id": req.payload.sub,
+            "public": req.body.public,
+        };
+        let recipe;
+        try {
+            recipe = await gCloudDatastore.saveDoc(newRecipe, RECIPE_DATASTORE_KEY);
+        } catch (err) {
+            return res.status(500).send({'Error': 'failed to save the new recipe to the datastore: ' + err});
+        }
+        recipe.self = generateSelf(ROOT_URL, '/recipes/' + recipe.id);
+        return res.status(201).send(JSON.stringify(recipe));
+    }
+
+
     async postBoat(req, res) {
         res.type('json');
 
