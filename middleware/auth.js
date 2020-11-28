@@ -31,7 +31,7 @@ async function verifyJWT(req, res, next) {
     try {
         payload = await getTokenPayload(authArr[1]);
     } catch (error) {
-        req.err = 'failed to validate supplied JWT';
+        req.error = 'failed to validate supplied JWT';
         return next();
     }
     req.payload = payload;

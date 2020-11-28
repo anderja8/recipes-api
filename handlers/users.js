@@ -65,13 +65,13 @@ class UserHandlers {
             };
             cleanedUsers.push(cleanedUser);
         }
-        return req.status(200).send(JSON.stringify(cleanedusers));
+        return res.status(200).send(JSON.stringify(cleanedUsers));
     }
 
     async deleteUsers(req, res) {
         // Verify the token checked out OK from the middleware
-        if (req.err) {
-            return res.status(401).send({'Error': req.err});
+        if (req.error) {
+            return res.status(401).send({'Error': req.error});
         }
 
         // Verify the user exists and is matches the JWT
