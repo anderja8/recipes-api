@@ -27,6 +27,7 @@ class RecipeHandlers {
             "instructions": req.body.instructions,
             "owner_id": req.payload.sub,
             "public": req.body.public,
+            "ingredients": [],
         };
         let recipe;
         try {
@@ -38,117 +39,188 @@ class RecipeHandlers {
         return res.status(201).send(JSON.stringify(recipe));
     }
 
-
-    async postBoat(req, res) {
-        res.type('json');
-
-        // Verify the token checked out OK from the middleware
-        if (req.err) {
-            return res.status(401).send({'Error': req.err});
-        }
-
-        // Verify the request body format is valid
-        if(req.get('content-type') !== 'application/json'){
-            return res.status(415).send({'Error': 'Server only accepts application/json data'});
-        }
-
-        // Verify that the required attributes are present
-        if (!req.body.name || !req.body.type || !req.body.length || req.body.public === null) {
-            return res.status(400).send({'Error': 'The request object is missing at least one of the required attributes'});
-        }
-
-        let newBoat = {
-            "name": req.body.name,
-            "type": req.body.type,
-            "length": req.body.length,
-            "public": req.body.public,
-            "owner": req.payload.sub,
-        };
-
-        let savedBoat;
+    async getRecipe(req, res) {
+        //Pull the recipe
+        let recipe;
         try {
-            savedBoat = await gCloudDatastore.saveDoc(newBoat, BOAT_DATASTORE_KEY);
+            recipe = await gCloudDatastore.getDoc(req.params.recipe_id, RECIPE_DATASTORE_KEY);
         } catch (err) {
-            return res.status(500).send({'Error': 'failed to save the new boat to the datastore: ' + err});
-        }
-        return res.status(201).send(JSON.stringify(savedBoat));
-    }
-
-    async getBoatByOwner(req, res) {
-        res.type('json');
-
-        let boats;
-        try {
-            boats = await gCloudDatastore.getDocsWithAttribute(BOAT_DATASTORE_KEY, 'owner', '=', req.params.owner_id);
-        } catch (err) {
-            return res.status(500).send({'Error': 'failed to search for boats in the datastore: ' + err});
+            return res.status(500).send({'Error': 'failed to search for the recipe in the datastore'});
         }
 
-        let publicBoats = [];
-        for (let boat of boats) {
-            if (boat.public === true) {
-                publicBoats.push(boat);
+        //Verify the recipe exists
+        if (!recipe) {
+            return res.status(404).send({'Error': 'No recipe with this recipe_id exists'});
+        }
+
+        //If the recipe is not public, verify the user is the owner
+        if (!recipe.public) {
+            //Verify JWT was OK
+            if (req.error) {
+                return res.status(401).send({'Error': req.error});
+            }
+            if (recipe.owner !== req.payload.sub) {
+                return res.status(403).send({'Error': 'The recipe with this recipe_id is owned by someone else'});
             }
         }
 
-        return res.status(200).send(JSON.stringify(publicBoats));
+        //Return the recipe
+        recipe.self = generateSelf(ROOT_URL, '/recipes/' + recipe.id);
+        res.status(200).send(JSON.stringify(recipe));
     }
 
-    async getBoats(req, res) {
-        res.type('json');
-
-        // Verify the token checked out OK from the middleware
-        let validJWT = true;
-        if (req.err) {
+    async getRecipes(req, res) {
+        validJWT = true;
+        if (req.error) {
             validJWT = false;
         }
 
-        // Decide what attribute to filter boats by
-        let attribute, attributeValue;
+        let recipes;
         if (validJWT) {
-            attribute = "owner";
-            attributeValue = req.payload.sub;
+            try {
+                recipes = await gCloudDatastore.getDocsWithAttribute(RECIPE_DATASTORE_KEY, 'owner_id', '=', req.payload.sub);
+            } catch (err) {
+                return res.status(500).send({'Error': 'failed to search for recipes in the datastore'});
+            }
         } else {
-            attribute = "public";
-            attributeValue = true;
+            try {
+                recipes = await gCloudDatastore.getDocsWithAttribute(RECIPE_DATASTORE_KEY, 'public', '=', true);
+            } catch (err) {
+                return res.status(500).send({'Error': 'failed to search for recipes in the datastore'});
+            }
         }
 
-        // Pull the boats and send them
-        let boats;
-        try {
-            boats = await gCloudDatastore.getDocsWithAttribute(BOAT_DATASTORE_KEY, 'public', '=', true);
-        } catch (err) {
-            return res.status(500).send({'Error': 'failed to search for boats in the datastore: ' + err});
+        recipesWithSelf = [];
+        for (recipe in recipes) {
+            recipe.self = generateSelf(ROOT_URL, '/recipes' + recipe.id);
+            recipesWithSelf.push(recipe);
         }
-        return res.status(200).send(JSON.stringify(boats));
+
+        res.status(200).send(JSON.stringify(recipesWithSelf));
     }
 
-    async deleteBoat(req, res) {
-        // Verify the token checked out OK from the middleware
-        if (req.err) {
-            return res.status(401).send({'Error': req.err});
+    async putRecipe(req, res) {
+        //Verify JWT was OK
+        if (req.error) {
+            return res.status(401).send({'Error': req.error});
         }
 
-        // Verify the boat exists and is owned by the JWT sub
-        let boat;
+        //Verify recipe exists
+        let recipe;
         try {
-            boat = await gCloudDatastore.getDoc(req.params.boat_id, BOAT_DATASTORE_KEY);
+            recipe = await gCloudDatastore.getDoc(req.params.recipe_id, RECIPE_DATASTORE_KEY);
         } catch (err) {
-            return res.status(500).send({'Error': 'failed to search for boat in the datastore: ' + err});
+            return res.status(500).send({'Error': 'failed to search for the recipe in the datastore'});
         }
-        if (!boat) {
-            return res.status(403).send({'Error': 'No boat with this boat_id exists'});
-        }
-        if (boat.owner !== req.payload.sub) {
-            return res.status(403).send({'Error': 'The boat with this boat_id is owned by someone else'});
+        if (!recipe) {
+            return res.status(404).send({'Error': 'No recipe with this recipe_id exists'});
         }
 
-        // If we got this far, the request is valid, delete the boat
-        //Try to delete the boat
+        //Verify the JWT owns this recipe
+        if (recipe.owner_id !== req.payload.sub) {
+            return res.status(403).send({'Error': 'The recipe with this recipe_id is owned by someone else'});
+        }
+
+        //Verify the request contains the required attributes recipe
+        if (!req.body.name || !req.body.description || req.body.public === null) {
+            return res.status(400).send({'Error': 'The request object is missing at least one of the required attributes'});
+        }
+        if (!req.body.instructions) {
+            req.body.instructions = "";
+        }
+
+        //Save the recipe
+        replacementRecipe = {
+            "name": req.body.name,
+            "description": req.body.description,
+            "instructions": req.body.instructions,
+            "owner_id": req.payload.sub,
+            "public": req.body.public,
+            "ingredients": [],
+        };
+        let replacedRecipe;
         try {
-            await gCloudDatastore.deleteDoc(req.params.boat_id, BOAT_DATASTORE_KEY);
+            replacedRecipe = await gCloudDatastore.replaceDoc(recipe.id, replacementRecipe, RECIPE_DATASTORE_KEY);
         } catch (err) {
-            return res.status(500).send({'Error': 'failed to delete the boat from the datastore: ' + err});
+            return res.status(500).send({'Error': 'failed to save the updated recipe to the datastore: ' + err});
+        }
+        replacedRecipe.self = generateSelf(ROOT_URL, '/recipes/' + replacedRecipe.id);
+        return res.status(201).send(JSON.stringify(replacedRecipe));
+    }
+
+    async patchRecipe(req, res) {
+        //Verify JWT was OK
+        if (req.error) {
+            return res.status(401).send({'Error': req.error});
+        }
+
+        //Verify recipe exists
+        let recipe;
+        try {
+            recipe = await gCloudDatastore.getDoc(req.params.recipe_id, RECIPE_DATASTORE_KEY);
+        } catch (err) {
+            return res.status(500).send({'Error': 'failed to search for the recipe in the datastore'});
+        }
+        if (!recipe) {
+            return res.status(404).send({'Error': 'No recipe with this recipe_id exists'});
+        }
+
+        //Verify the JWT owns this recipe
+        if (recipe.owner_id !== req.payload.sub) {
+            return res.status(403).send({'Error': 'The recipe with this recipe_id is owned by someone else'});
+        }
+
+        //Save the recipe
+        public = false;
+        if (req.body.public === null) {
+            public = req.body.public;
+        }
+        updatedRecipe = {
+            "name": req.body.name || recipe.name,
+            "description": req.body.description || recipe.description,
+            "instructions": req.body.instructions || recipe.instructions,
+            "owner_id": req.payload.sub,
+            "public": public,
+            "ingredients": req.body.ingredients,
+        };
+        let updateRecipe;
+        try {
+            updateRecipe = await gCloudDatastore.replaceDoc(recipe.id, updatedRecipe, RECIPE_DATASTORE_KEY);
+        } catch (err) {
+            return res.status(500).send({'Error': 'failed to save the updated recipe to the datastore: ' + err});
+        }
+        updateRecipe.self = generateSelf(ROOT_URL, '/recipes/' + updateRecipe.id);
+        return res.status(201).send(JSON.stringify(updateRecipe));
+    }
+
+    async deleteRecipe(req, res) {
+        //Verify JWT was OK
+        if (req.error) {
+            return res.status(401).send({'Error': req.error});
+        }
+
+        //Verify recipe exists
+        let recipe;
+        try {
+            recipe = await gCloudDatastore.getDoc(req.params.recipe_id, RECIPE_DATASTORE_KEY);
+        } catch (err) {
+            return res.status(500).send({'Error': 'failed to search for the recipe in the datastore'});
+        }
+        if (!recipe) {
+            return res.status(404).send({'Error': 'No recipe with this recipe_id exists'});
+        }
+
+        //Verify the JWT owns this recipe
+        if (recipe.owner_id !== req.payload.sub) {
+            return res.status(403).send({'Error': 'The recipe with this recipe_id is owned by someone else'});
+        }
+
+        //Delete the recipe
+        let result;
+        try {
+            result = await gCloudDatastore.deleteDoc(req.params.recipe_id, RECIPE_DATASTORE_KEY);
+        } catch (err) {
+            res.status(500).send({'Error': 'could not delete recipe from datastore ' + err});
         }
         return res.status(204).send();
     }

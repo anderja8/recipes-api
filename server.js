@@ -66,6 +66,12 @@ router.get('/user-info', userHandlers.getJWT);
 router.get('/users', verifyJSONAccepts, userHandlers.getUsers);
 router.delete('/users/:user_id', verifyJSONAccepts, verifyJWT, userHandlers.deleteUsers);
 //recipes
+router.post('/recipes', verifyJSONAccepts, verifyJWT, recipeHandlers.postRecipe);
+router.get('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipe);
+router.get('/recipes', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipes);
+router.put('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.putRecipe);
+router.patch('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.patchRecipe);
+router.delete('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.deleteRecipe);
 
 //ingredients
 

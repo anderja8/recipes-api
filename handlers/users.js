@@ -89,24 +89,24 @@ class UserHandlers {
         }
 
         // If we got this far, the request is valid, delete the user, their recipes, and their ingredients
+        let promises = [];
         let recipes = [];
+        let ingredients = [];
         try {
             recipes = await gCloudDatastore.getDocsWithAttribute(RECIPE_DATASTORE_KEY, 'owner_id', '=', user.sub);
         } catch (err) {
             return res.status(500).send({'Error': 'failed to search for recipes in the datastore: ' + err});
         }
-        let promises = [];
+        try {
+            ingredients = await gCloudDatastore.getDocsWithAttribute(INGREDIENT_DATASTORE_KEY, 'owner_id', '=', user.sub);
+        } catch (err) {
+            return res.status(500).send({'Error': 'failed to search for ingredients in the datastore: ' + err});
+        }
         for (recipe in recipes) {
-            let ingredients = [];
-            try {
-                ingredients = await gCloudDatastore.getDocsWithAttribute(INGREDIENT_DATASTORE_KEY, 'recipe_id', '=', recipe.id);
-            } catch (err) {
-                return res.status(500).send({'Error': 'failed to search for ingredients in the datastore: ' + err});
-            }
-            for (ingredient in ingredients) {
-                promises.push(gCloudDatastore.deleteDoc(ingredient.id, INGREDIENT_DATASTORE_KEY));
-            }
             promises.push(gCloudDatastore.deleteDoc(recipe.id, RECIPE_DATASTORE_KEY));
+        }
+        for (ingredient in ingredients) {
+            promises.push(gCloudDatastore.deleteDoc(ingredient.id, INGREDIENT_DATASTORE_KEY));
         }
         promises.push(gCloudDatastore.deleteDoc(user.id, USER_DATASTORE_KEY));
         Promise.all(promises)
