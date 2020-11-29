@@ -4,6 +4,7 @@ const config = require('../config.js');
 const { generateSelf } = require('./handlerHelpers.js');
 
 const RECIPE_DATASTORE_KEY = 'RECIPE';
+const INGREDIENT_DATASTORE_KEY = 'INGREDIENT';
 const ROOT_URL = config.ROOT_URL;
 
 class RecipeHandlers {
@@ -172,16 +173,16 @@ class RecipeHandlers {
         }
 
         //Save the recipe
-        public = false;
+        let isPublic = false;
         if (req.body.public === null) {
-            public = req.body.public;
+            isPublic = req.body.public;
         }
         updatedRecipe = {
             "name": req.body.name || recipe.name,
             "description": req.body.description || recipe.description,
             "instructions": req.body.instructions || recipe.instructions,
             "owner_id": req.payload.sub,
-            "public": public,
+            "public": isPublic,
             "ingredients": req.body.ingredients,
         };
         let updateRecipe;
@@ -224,6 +225,14 @@ class RecipeHandlers {
             res.status(500).send({'Error': 'could not delete recipe from datastore ' + err});
         }
         return res.status(204).send();
+    }
+
+    async addIngredient(req, res) {
+
+    }
+
+    async removeIngredient(req, res) {
+        
     }
 }
 

@@ -181,7 +181,7 @@ class IngredientHandlers {
         return res.status(201).send(JSON.stringify(updatedIngredient));
     }
 
-    async deleteingredient(req, res) {
+    async deleteIngredient(req, res) {
         //Verify JWT was OK
         if (req.error) {
             return res.status(401).send({'Error': req.error});
