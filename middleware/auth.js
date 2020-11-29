@@ -3,8 +3,7 @@ const url = require('url');
 const axios = require('axios');
 const crypto = require('crypto');
 
-//const ROOT_URL = 'https://anderja8-secure-boat.appspot.com';
-const ROOT_URL = 'http://localhost:8080';
+const ROOT_URL = config.ROOT_URL;
 const AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/v2/auth';
 const TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
 const REDIRECT_URI = ROOT_URL + '/oauth2callback';

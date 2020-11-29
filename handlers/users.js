@@ -110,7 +110,7 @@ class UserHandlers {
         }
         promises.push(gCloudDatastore.deleteDoc(user.id, USER_DATASTORE_KEY));
         Promise.all(promises)
-            .then((results) => {
+            .then(() => {
                 return res.status(204).send();
             })
             .catch((err) => {

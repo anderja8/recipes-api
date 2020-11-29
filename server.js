@@ -11,6 +11,8 @@ const userHandlers = new UserHandlers();
 const config = require('./config.js');
 const { RecipeHandlers } = require('./handlers/recipes.js');
 const recipeHandlers = new RecipeHandlers();
+const { IngredientHandlers } = require('./handlers/ingredients.js');
+const ingredientHandlers = new RecipeHandlers();
 const { verifyJSONAccepts } = require('./middleware/accept.js');
 
 const app = express();
@@ -74,7 +76,12 @@ router.patch('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers
 router.delete('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.deleteRecipe);
 
 //ingredients
-
+router.post('/ingredients', verifyJSONAccepts, verifyJWT, recipeHandlers.postRecipe);
+router.get('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipe);
+router.get('/ingredients', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipes);
+router.put('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.putRecipe);
+router.patch('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.patchRecipe);
+router.delete('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.deleteRecipe);
 
 //Start up the server
 app.use(router);

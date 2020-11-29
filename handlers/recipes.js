@@ -1,9 +1,10 @@
 const { GCloudDatastore } = require('../datastore/datastore.js');
 gCloudDatastore = new GCloudDatastore();
+const config = require('../config.js');
 const { generateSelf } = require('./handlerHelpers.js');
 
 const RECIPE_DATASTORE_KEY = 'RECIPE';
-const ROOT_URL = 'http://localhost:8080';
+const ROOT_URL = config.ROOT_URL;
 
 class RecipeHandlers {
     async postRecipe(req, res) {
