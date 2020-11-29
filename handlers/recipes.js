@@ -428,7 +428,7 @@ class RecipeHandlers {
             return res.status(404).send({ 'Error' : 'The ingredient with this ingredient_id was not linked to the recipe with this recipe_id' })
         }
 
-        //Save the update recipe
+        //Save the updated recipe
         let updatedRecipe = {
             "name": recipe.name,
             "description": recipe.description,
@@ -487,9 +487,19 @@ class RecipeHandlers {
                 break;
             }
         }
+
+        //Look for the recipe and remove it
+        let foundRecipe = false;
+        for (var i = 0; i < ingredient.recipes.length; i++) {
+            if (ingredient.recipes[i].id === req.params.recipe_id) {
+                foundRecipe = true;
+                ingredient.recipes.splice(i, 1);
+                break;
+            }
+        }
         
-        //If the ingredient wasn't in the recipes' ingredients list, throw a 404
-        if (!foundIngredient) {
+        //If the ingredient wasn't in the recipes' ingredients list, or the recipe wasn't in the ingredients' recipes list, throw a 404
+        if (!foundIngredient || !foundRecipe) {
             return res.status(404).send({ 'Error' : 'The ingredient with this ingredient_id was not linked to the recipe with this recipe_id' })
         }
 
@@ -507,6 +517,21 @@ class RecipeHandlers {
         } catch (err) {
             return res.status(500).send({ 'Error': 'failed to save the recipe-ingredient link to the datastore: ' + err });
         }
+
+        //Save the updated ingredient
+        let updatedIngredient = {
+            "name": ingredient.name,
+            "stock": ingredient.stock,
+            "owner_id": ingredient.owner_id,
+            "last_updated": ingredient.last_updated,
+            "recipes": ingredient.recipes,
+        }
+        try {
+            await gCloudDatastore.replaceDoc(ingredient.id, updatedIngredient, INGREDIENT_DATASTORE_KEY);
+        } catch (err) {
+            return res.status(500).send({ 'Error': 'failed to save the linked ingredient to the datastore: ' + err });
+        }
+
         return res.status(204).send();
     }
 }
