@@ -1,0 +1,2896 @@
+{
+	"info": {
+		"_postman_id": "83c06e4b-11be-4fe3-986d-33aecc5c8a38",
+		"name": "recipes-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create latte recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "545ce5f9-2cc7-4f49-9d4a-a893bd3297ba",
+						"exec": [
+							"pm.collectionVariables.set(\"latte_id\", pm.response.json().id);",
+							"pm.collectionVariables.set(\"user_id_1\", pm.response.json().owner_id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"latte\",\n    \"description\": \"A simple caffeinated beverage\",\n    \"instructions\": \"First pour the espresso, followed by the milk\",\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create latte recipe no auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aa292724-ba3c-4475-832b-ffa3324ed09a",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"latte\",\n    \"description\": \"A simple caffeinated beverage\",\n    \"instructions\": \"First pour the espresso, followed by the milk\",\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create latte recipe invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "805d961c-5bae-4415-82e2-27c3d9e6c7ff",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{INVALID_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"latte\",\n    \"description\": \"A simple caffeinated beverage\",\n    \"instructions\": \"First pour the espresso, followed by the milk\",\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "replace latte recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5f8ddb0f-1021-4ea1-9711-a9315ee0c928",
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"latte\",\n    \"description\": \"A simple caffeinated beverage\",\n    \"instructions\": \"First pour the milk, followed by the espresso\",\n    \"public\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "replace latte recipe - invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d9cfa694-71c7-4fee-a8cc-328b2e617a7b",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"latte\",\n    \"description\": \"A simple caffeinated beverage\",\n    \"instructions\": \"First pour the milk, followed by the espresso\",\n    \"public\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update latte recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b26aaaed-923e-43a3-9adb-a6dd89546475",
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"instructions\": \"First pour the espresso, followed by the milk\",\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update latte recipe - invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6f6717ec-04cb-4ae6-8705-7b61a9543f25",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"instructions\": \"First pour the espresso, followed by the milk\",\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create iced latte recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "649448a9-9acb-41ab-9e6f-f3747343f5ca",
+						"exec": [
+							"pm.collectionVariables.set(\"iced_latte_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"caramel and chocolate iced latte\",\n    \"description\": \"Super sweet caffeinated beverage\",\n    \"instructions\": \"Add ice, drizzle syrups, pour espresso, and add oat milk\",\n    \"public\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create espresso ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3119bac1-9b88-4b07-9f99-b5c1c341eee3",
+						"exec": [
+							"pm.collectionVariables.set(\"espresso_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"espresso\",\n    \"stock\": \"10 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create espresso ingredient no auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "15846dd5-9307-4d37-afdb-d80937373cf1",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"espresso\",\n    \"stock\": \"10 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create espresso ingredient invalid auth Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f7f77769-1e7e-418c-a47f-818c32619982",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{INVALID_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"espresso\",\n    \"stock\": \"10 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create milk ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fe81ea78-6450-4e15-b423-9e2badd57d4b",
+						"exec": [
+							"pm.collectionVariables.set(\"milk_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"milk\",\n    \"stock\": \"1 gal\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create caramel ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2e21c6cf-1684-4a18-baf1-7733496cb47d",
+						"exec": [
+							"pm.collectionVariables.set(\"caramel_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"caramel syrup\",\n    \"stock\": \"375 ml\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create chocolate ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e3173a12-6ad1-4365-b298-33c1462024e2",
+						"exec": [
+							"pm.collectionVariables.set(\"chocolate_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"chocolate syrup\",\n    \"stock\": \"375 ml\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create ice ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b861530-37d9-4a22-8083-1880013271af",
+						"exec": [
+							"pm.collectionVariables.set(\"ice_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"ice\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create liver ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5bf11c70-ce49-46b9-8496-87c0eedfd2d4",
+						"exec": [
+							"pm.collectionVariables.set(\"liver_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"liver\",\n    \"stock\": \"0\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create oat milk ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f20dc1c6-9bff-4a62-ab25-aef944bf72d5",
+						"exec": [
+							"pm.collectionVariables.set(\"oat_milk_id\", pm.response.json().id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"oat milk\",\n    \"stock\": \"0.5 gal\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link latte - espresso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "067d56d6-fa08-4f34-826c-3b05839a50eb",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"2 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}/ingredients/{{espresso_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}",
+						"ingredients",
+						"{{espresso_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update link latte - espresso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6076f41a-a9d9-48d3-ac21-7263fb669166",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"4 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}/ingredients/{{espresso_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}",
+						"ingredients",
+						"{{espresso_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update link latte - espresso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62b59512-1647-49c0-af6d-d8eee0a5ef55",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"3 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}/ingredients/{{espresso_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}",
+						"ingredients",
+						"{{espresso_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update link latte - milk",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "913a27cf-c7c2-4b03-8876-c5688d44f12d",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"8 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}/ingredients/{{milk_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}",
+						"ingredients",
+						"{{milk_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link latte - milk",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d0976479-ba9b-421b-ab58-3916569e4ca9",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"8 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}/ingredients/{{milk_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}",
+						"ingredients",
+						"{{milk_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link iced latte - espresso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3692253d-dca4-4d30-a266-7782d1e06c8e",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"3 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}/ingredients/{{espresso_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}",
+						"ingredients",
+						"{{espresso_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link iced latte - ice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13ef25af-90d7-4256-87a2-88e2f9401c3f",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"6 cubes\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}/ingredients/{{ice_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}",
+						"ingredients",
+						"{{ice_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link iced latte - chocolate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74f010d5-e98e-4832-9ded-31532060ffe6",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"to taste\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}",
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link iced latte - caramel",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7e892d64-15e1-4bb0-ba39-13957f5903a3",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"to taste\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}/ingredients/{{caramel_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}",
+						"ingredients",
+						"{{caramel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link iced latte - oat milk",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "864e0e16-9b10-476e-8150-e2899bd992ff",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"8 oz\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}/ingredients/{{oat_milk_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}",
+						"ingredients",
+						"{{oat_milk_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get latte recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7b48bc83-6753-447a-9615-77d0130dbc77",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"two linked ingredients\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ingredients.length).to.be.equal(2);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get latte recipe - invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e96699cc-0bc6-4d2f-8b88-6c9cc0b8aa3a",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get iced latte recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b28dd1d7-e9bb-488c-bfda-d683135cd228",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"five linked ingredients\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ingredients.length).to.be.equal(5);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all recipes for user 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bdde179e-7f3c-4794-97b2-7daa27ba3cda",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"two recipes and no next link\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(2);",
+							"    pm.expect(jsonData.next).to.be.equal(undefined);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all ingredients for user 1 - page 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb1d1443-abba-458a-850a-ddc5e2e1c01c",
+						"exec": [
+							"pm.collectionVariables.set(\"next_ingredient_page\", pm.response.json().next);",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"five ingredients and next link\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ingredients.length).to.be.equal(5);",
+							"    pm.expect(jsonData.next).to.not.be.equal(undefined);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all ingredients for user 1 - page 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b6918b79-76d6-4069-88e8-8c8e1bdb7962",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"two ingredients and no next link\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ingredients.length).to.be.equal(2);",
+							"    pm.expect(jsonData.next).to.be.equal(undefined);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{next_ingredient_page}}",
+					"host": [
+						"{{next_ingredient_page}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create tea recipe user 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "89baad2c-e6b7-4b67-b3e6-b10271a457d3",
+						"exec": [
+							"pm.collectionVariables.set(\"tea_id\", pm.response.json().id);",
+							"pm.collectionVariables.set(\"user_id_2\", pm.response.json().owner_id);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"tea\",\n    \"description\": \"A simple caffeinated beverage\",\n    \"instructions\": \"Just add hot water and a tea bag\",\n    \"public\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link tea - liver invalid permissions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d7c03188-6dce-410f-8f90-1f710143af64",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"1 liver\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{tea_id}}/ingredients/{{liver_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{tea_id}}",
+						"ingredients",
+						"{{liver_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all public recipes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c60cc301-ae51-41f4-9237-8eeaf7bb0e9a",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"two recipes and no next link\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(2);",
+							"    pm.expect(jsonData.next).to.be.equal(undefined);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all public recipes invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9cab1a5-d5de-40f2-8e79-782e84f794c2",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"two recipes and no next link\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(2);",
+							"    pm.expect(jsonData.next).to.be.equal(undefined);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{INVALID_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all recipes user 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a2f369c-c950-414d-9f0b-f0ff4a045121",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"one recipes and no next link\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(1);",
+							"    pm.expect(jsonData.next).to.be.equal(undefined);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unlink caramel from iced latte",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ccf82f44-c9f0-4858-bb0b-fcbddd1d4152",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}/ingredients/{{caramel_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}",
+						"ingredients",
+						"{{caramel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get iced latte recipe 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "60afa65d-0cce-4400-9f06-076934f71d44",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"four linked ingredients\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ingredients.length).to.be.equal(4);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get caramel ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c2ca376-4c85-468b-a3ba-67eab0c6b770",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"no linked recipes\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(0);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{caramel_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{caramel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get chocolate ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fa0cd391-7cb7-4c17-bc4c-869b7626792e",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"one linked recipes\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(1);",
+							"    pm.expect(jsonData.stock).to.be.equal(\"375 ml\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "replace chocolate ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b78ccbe4-67e7-48f5-a6b6-cb7fa4041c3c",
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"one linked recipes\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(1);",
+							"    pm.expect(jsonData.stock).to.be.equal(\"300 ml\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"chocolate syrup\",\n    \"stock\": \"300 ml\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "replace chocolate ingredient - invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "622ddc93-4fc3-45cd-ab16-b9da4ecc7610",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"chocolate syrup\",\n    \"stock\": \"300 ml\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update chocolate ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "685e7848-3de0-4701-b61d-e159efeaaece",
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"one linked recipes\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(1);",
+							"    pm.expect(jsonData.stock).to.be.equal(\"250 ml\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"stock\": \"250 ml\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update chocolate ingredient - invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f8758473-a312-4897-81c7-233c56608ace",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"stock\": \"250 ml\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete chocolate ingredient - invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "84caabab-3ae6-4da1-aa8f-7e353edb7027",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete chocolate ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ddead932-3b9d-40fe-b271-e4c059af4537",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete chocolate ingredient 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e1de1e4e-d390-4000-add9-b517fa7581e3",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "link iced latte - chocolate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3f7819e8-7fe1-439e-b336-518a52758b1e",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}/ingredients/{{chocolate_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}",
+						"ingredients",
+						"{{chocolate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get iced latte recipe 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7108fdd8-a96d-4126-b5a8-4eb65fe4d4ab",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"three linked ingredients\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ingredients.length).to.be.equal(3);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete iced latte recipe - invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e1e1c9a1-00d5-4bee-b2c4-a24d5f0c4c0a",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete iced latte recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1aa22fdf-ed7c-447c-b918-04df08399532",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{iced_latte_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get espresso ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6f369469-a13a-4a9d-952f-4e1d0be5c04e",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"one linked recipes\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients/{{espresso_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients",
+						"{{espresso_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify 405 on recipes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2c4dfb16-2f9e-4eb4-96d6-54adef07a101",
+						"exec": [
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify 405 on ingredients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e38c0140-1770-48b4-88f1-8d754ef2cee9",
+						"exec": [
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify 406 on recipes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f7d4f9fe-af81-47a5-b579-d99f39473b14",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/hmtl",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify 406 on ingredients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "27d4d962-1d2b-4674-80c6-c4ea4dfc8f0a",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/hmtl"
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/ingredients",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "73a2410f-7d04-4c78-b644-a7d5e2caaa1e",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"two users\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.be.equal(2);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/users",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "39f3fad5-6524-417a-917b-c6c81fbf63e8",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/users/{{user_id_2}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"users",
+						"{{user_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get tea recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f827c1b8-af84-4b82-859a-bbcef59e1076",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes/{{tea_id}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes",
+						"{{tea_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4df82c94-35ba-4e3c-a260-31ebdc84ef19",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/users/{{user_id_1}}",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"users",
+						"{{user_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user 1 recipes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac2e4dab-29c1-4962-9307-8dc5d5155890",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"no recipes\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.recipes.length).to.be.equal(0);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user 1 ingredients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "91f68f13-7628-4ea5-bd6c-6b37b5786dfd",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    //Check for success 200 response code",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"no ingredients\", function () {",
+							"    //Check if the content is valid",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ingredients.length).to.be.equal(0);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{ROOT_URL}}/recipes",
+					"host": [
+						"{{ROOT_URL}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{JWT_1}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "7249f870-92b5-4768-8e2c-8012927efb1d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "bf68cbee-45b6-4f8e-9d07-db5eaa1078bc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

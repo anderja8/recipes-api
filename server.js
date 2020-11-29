@@ -45,13 +45,13 @@ router.get('/privacy', function(req, res) {
 
 // postman and documentation files
 // TODO add these files
-/*
 router.get('/pm-env', function(req, res) {
-    res.status(200).sendFile(__dirname + "/static/postman/secure-boat.postman_environment.json");
+    res.status(200).sendFile(__dirname + "/static/postman/recipes-api.postman_environment.json");
 });
 router.get('/pm-collection', function(req, res) {
-    res.status(200).sendFile(__dirname + "/static/postman/secure-boat.postman_collection.json");
+    res.status(200).sendFile(__dirname + "/static/postman/recipes-api.postman_collection.json");
 });
+/*
 router.get('/documentation', function(req, res) {
     res.status(200).sendFile(__dirname + "/static/recipes_api_documentation.pdf");
 });
