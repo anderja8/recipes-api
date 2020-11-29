@@ -6,6 +6,7 @@ const { generateSelf } = require('./handlerHelpers.js');
 const INGREDIENT_DATASTORE_KEY = 'INGREDIENT';
 const RECIPE_DATASTORE_KEY = 'RECIPE';
 const ROOT_URL = config.ROOT_URL;
+const PAGINATION_SIZE = 5;
 
 class IngredientHandlers {
     async postIngredient(req, res) {
@@ -76,21 +77,30 @@ class IngredientHandlers {
         }
 
         //Pull the ingredients
-        let ingredients;
+        let data;
         try {
-            ingredients = await gCloudDatastore.getDocsWithAttribute(INGREDIENT_DATASTORE_KEY, 'owner_id', '=', req.payload.sub);
+            data = await gCloudDatastore.getDocsWithAttributeAndPagination(
+                INGREDIENT_DATASTORE_KEY, 'owner_id', '=', req.payload.sub, PAGINATION_SIZE, req.query.endCursor);
         } catch (err) {
             return res.status(500).send({'Error': 'failed to search for the ingredients in the datastore'});
         }
+        let ingredients = data[0];
+        const dataInfo = data[1];
 
-        //Return the ingredients
-        ingredientsWithSelf = [];
-        for (ingredient in ingredients) {
-            ingredient.self = generateSelf(ROOT_URL, '/ingredients' + ingredient.id);
-            ingredientsWithSelf.push(ingredient);
+        //Generate self
+        for (var i = 0; i < ingredients.length; i++) {
+            ingredients[i].self = generateSelf(ROOT_URL, '/ingredients' + ingredient.id);
         }
 
-        res.status(200).send(JSON.stringify(ingredientsWithSelf));
+        //Create the json body to return
+        let retJSON = {
+            "ingredients": ingredients
+        };
+        if (pageInfo.moreResults === true) {
+            retJSON.next = ROOT_URL + '/ingredients?endCursor=' + pageInfo.endCursor;
+        }
+
+        res.status(200).send(JSON.stringify(retJSON));
     }
 
     async putIngredient(req, res) {
@@ -212,7 +222,7 @@ class IngredientHandlers {
         }
         let promises = [];
         for (recipe in recipes) {
-            for (var i = recipe.ingredients.length; i >= recipe.ingredients.length; i--) {
+            for (var i = recipe.ingredients.length; i >= 0; i--) {
                 if (recipe.ingredients[i].id === req.params.ingredient_id) {
                     recipe.ingredients.splice(i, 1);
                 }

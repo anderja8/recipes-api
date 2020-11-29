@@ -81,7 +81,7 @@ class GCloudDatastore {
         const entities = results[0].map(this.fromDatastore);
         const info = results[1];
     
-        //There is glitch the datastore emulator where moreResults will never return
+        //There is glitch with the datastore emulator where moreResults will never return
         //NO_MORE_RESULTS. Adding a length check as a pseudo-work around for local testing
         //https://github.com/googleapis/google-cloud-node/issues/2846
         if (info.moreResults === Datastore.NO_MORE_RESULTS || entities.length < pageSize) {
@@ -150,6 +150,36 @@ class GCloudDatastore {
         }
 
         return entities[0].map(this.fromDatastore);
+    }
+
+    async getDocsWithAttributeAndPagination(datastoreKey, attribute, comparator, attributeValue, pageSize, pageCursor) {
+        let q = this.datastore.createQuery(datastoreKey).filter(attribute, comparator, attributeValue).limit(pageSize);
+
+        if (pageCursor) {
+            q = q.start(pageCursor);
+        }
+
+        let results;
+        try {
+            results = await datastore.runQuery(q);
+        } catch (err) {
+            return err;
+        }
+        const entities = results[0].map(this.fromDatastore);
+        const info = results[1];
+    
+        //There is glitch with the datastore emulator where moreResults will never return
+        //NO_MORE_RESULTS. Adding a length check as a pseudo-work around for local testing
+        //https://github.com/googleapis/google-cloud-node/issues/2846
+        if (info.moreResults === Datastore.NO_MORE_RESULTS || entities.length < pageSize) {
+            //Make this resposne independent of datastore implementation
+            info.moreResults = false;
+        }
+        else {
+            info.moreResults = true;
+        }
+    
+        return [entities, info];
     }
 }
 

@@ -86,6 +86,8 @@ router.delete('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, ingre
 
 //recipe-ingredient relations
 router.post('/recipes/:recipe_id/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.addIngredient);
+router.put('/recipes/:recipe_id/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.modifyIngredient);
+router.patch('/recipes/:recipe_id/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.modifyIngredient);
 router.delete('/recipes/:recipe_id/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.removeIngredient);
 
 //Start up the server
