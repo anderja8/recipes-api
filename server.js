@@ -68,6 +68,7 @@ router.get('/user-info', userHandlers.getJWT);
 //users
 router.get('/users', verifyJSONAccepts, userHandlers.getUsers);
 router.delete('/users/:user_id', verifyJSONAccepts, verifyJWT, userHandlers.deleteUsers);
+
 //recipes
 router.post('/recipes', verifyJSONAccepts, verifyJWT, recipeHandlers.postRecipe);
 router.get('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipe);
@@ -75,6 +76,10 @@ router.get('/recipes', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipes);
 router.put('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.putRecipe);
 router.patch('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.patchRecipe);
 router.delete('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.deleteRecipe);
+router.delete('/recipes', function(req, res) {
+    res.set('Accept', 'GET, POST');
+    res.status(405).end();
+});
 
 //ingredients
 router.post('/ingredients', verifyJSONAccepts, verifyJWT, ingredientHandlers.postIngredient);
@@ -83,6 +88,10 @@ router.get('/ingredients', verifyJSONAccepts, verifyJWT, ingredientHandlers.getI
 router.put('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, ingredientHandlers.putIngredient);
 router.patch('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, ingredientHandlers.patchIngredient);
 router.delete('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, ingredientHandlers.deleteIngredient);
+router.delete('/ingredients', function(req, res) {
+    res.set('Accept', 'GET, POST');
+    res.status(405).end();
+})
 
 //recipe-ingredient relations
 router.post('/recipes/:recipe_id/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, recipeHandlers.addIngredient);

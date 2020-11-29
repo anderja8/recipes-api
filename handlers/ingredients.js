@@ -30,6 +30,7 @@ class IngredientHandlers {
             "stock": req.body.stock,
             "owner_id": req.payload.sub,
             "last_updated": date.toString(),
+            "recipes": [],
         };
         let ingredient;
         try {
@@ -65,6 +66,22 @@ class IngredientHandlers {
             return res.status(403).send({'Error': 'The ingredient with this ingredient_id is owned by someone else'});
         }
 
+
+        //Get the recipe names
+        let promises = [];
+        for (var i = 0; i < ingredient.recipes.length; i++) {
+            promises.push(gCloudDatastore.getDoc(ingredient.recipes[i].id, RECIPE_DATASTORE_KEY));
+        }
+        Promise.all(promises)
+            .then((recipesFromDataStore) => {
+                for (i = 0; i < ingredient.recipes.length; i++) {
+                    ingredient.recipes[i].name = recipesFromDataStore[i].name;
+                }
+            })
+            .catch((err) => {
+                return res.status(500).send({ 'Error': 'failure while getting recipe names from datastore: ' + err });
+            });
+
         //Return the ingredient
         ingredient.self = generateSelf(ROOT_URL, '/ingredients/' + ingredient.id);
         res.status(200).send(JSON.stringify(ingredient));
@@ -87,9 +104,22 @@ class IngredientHandlers {
         let ingredients = data[0];
         const dataInfo = data[1];
 
-        //Generate self
+        //Get the recipe names and self for the ingredients
         for (var i = 0; i < ingredients.length; i++) {
-            ingredients[i].self = generateSelf(ROOT_URL, '/ingredients' + ingredient.id);
+            let promises = [];
+            for (j = 0; i < ingredients[i].recipes.length; j++) {
+                promises.push(gCloudDatastore.getDoc(ingredients[i].recipes[j].id, RECIPE_DATASTORE_KEY));
+            }
+            Promise.all(promises)
+                .then((recipesFromDataStore) => {
+                    for (j = 0; j < recipe.ingredients.length; j++) {
+                        recipes[i].ingredients[j].name = recipesFromDataStore[j].name;
+                    }
+                })
+                .catch((err) => {
+                    return res.status(500).send({ 'Error': 'failure while getting ingredient names from datastore: ' + err });
+                });
+            recipes[i].self = generateSelf(ROOT_URL, '/recipes/' + recipes[i].id);
         }
 
         //Create the json body to return
@@ -140,6 +170,7 @@ class IngredientHandlers {
             "stock": req.body.stock,
             "owner_id": req.payload.sub,
             "last_updated": date.toString(),
+            "recipes": ingredient.recipes,
         };
         let replacedIngredient;
         try {
@@ -180,6 +211,7 @@ class IngredientHandlers {
             "stock": req.body.stock || ingredient.stock,
             "owner_id": req.payload.sub,
             "last_updated": date.toString(),
+            "recipes": ingredient.recipes,
         };
         let updatedIngredient;
         try {

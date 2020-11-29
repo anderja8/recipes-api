@@ -121,7 +121,7 @@ class RecipeHandlers {
             }
             Promise.all(promises)
                 .then((ingredientsFromDatastore) => {
-                    for (i = 0; i < recipe.ingredients.length; i++) {
+                    for (j = 0; j < recipe.ingredients.length; j++) {
                         recipes[i].ingredients[j].name = ingredientsFromDatastore[j].name;
                     }
                 })
@@ -179,7 +179,7 @@ class RecipeHandlers {
             "instructions": req.body.instructions,
             "owner_id": req.payload.sub,
             "public": req.body.public,
-            "ingredients": [],
+            "ingredients": recipe.ingredients,
         };
         let replacedRecipe;
         try {
@@ -224,7 +224,7 @@ class RecipeHandlers {
             "instructions": req.body.instructions || recipe.instructions,
             "owner_id": req.payload.sub,
             "public": isPublic,
-            "ingredients": req.body.ingredients,
+            "ingredients": recipe.ingredients,
         };
         let updateRecipe;
         try {
@@ -256,6 +256,30 @@ class RecipeHandlers {
         //Verify the JWT owns this recipe
         if (recipe.owner_id !== req.payload.sub) {
             return res.status(403).send({ 'Error': 'The recipe with this recipe_id is owned by someone else' });
+        }
+
+        //Delete the recipe from any ingredients using it
+        let ingredients;
+        try {
+            ingredients = gCloudDatastore.getDocsWithAttribute(RECIPE_DATASTORE_KEY, 'owner_id', '=', req.payload.sub);
+        } catch (err) {
+            return res.status(500).send({'Error': 'failed to search for ingredients owned by the user'});
+        }
+        let promises = [];
+        for (ingredient in ingredients) {
+            for (var i = ingredient.recipes.length; i >= 0; i--) {
+                if (ingredient.recipes[i].id === req.params.recipe_id) {
+                    ingredient.recipes.splice(i, 1);
+                }
+            }
+            updatedIngredient = {
+                "name": ingredient.name,
+                "stock": ingredient.stock,
+                "owner_id": ingredient.owner_id,
+                "last_updated": ingredient.last_updated,
+                "recipes": ingredient.recipes,
+            }
+            promises.push(gCloudDatastore.replaceDoc(ingredient.id, updatedIngredient, INGREDIENT_DATASTORE_KEY));
         }
 
         //Delete the recipe
@@ -316,10 +340,11 @@ class RecipeHandlers {
             return res.status(400).send({ 'Error': 'The request object is missing the required "quantity" attribute' });
         }
 
-        //Add the ingredient and quantity and save
+        //Add the ingredient and quantity
         recipe.ingredients.push({ "id": ingredient.id, "quantity": req.body.quantity });
+        ingredient.recipes.push({"id": recipe.id});
 
-        //Save the update recipe
+        //Save the updated recipe and ingredient
         let updatedRecipe = {
             "name": recipe.name,
             "description": recipe.description,
@@ -331,8 +356,22 @@ class RecipeHandlers {
         try {
             await gCloudDatastore.replaceDoc(recipe.id, updatedRecipe, RECIPE_DATASTORE_KEY);
         } catch (err) {
-            return res.status(500).send({ 'Error': 'failed to save the recipe-ingredient link to the datastore: ' + err });
+            return res.status(500).send({ 'Error': 'failed to save the linked recipe to the datastore: ' + err });
         }
+
+        let updatedIngredient = {
+            "name": ingredient.name,
+            "stock": ingredient.stock,
+            "owner_id": ingredient.owner_id,
+            "last_updated": ingredient.last_updated,
+            "recipes": ingredient.recipes,
+        }
+        try {
+            await gCloudDatastore.replaceDoc(ingredient.id, updatedIngredient, INGREDIENT_DATASTORE_KEY);
+        } catch (err) {
+            return res.status(500).send({ 'Error': 'failed to save the linked ingredient to the datastore: ' + err });
+        }
+
         return res.status(204).send();
     }
 
