@@ -24,7 +24,7 @@ class RecipeHandlers {
         }
 
         //Save the recipe
-        newRecipe = {
+        let newRecipe = {
             "name": req.body.name,
             "description": req.body.description,
             "instructions": req.body.instructions,
@@ -72,7 +72,7 @@ class RecipeHandlers {
         for (var i = 0; i < recipe.ingredients.length; i++) {
             promises.push(gCloudDatastore.getDoc(recipe.ingredients[i].id, INGREDIENT_DATASTORE_KEY));
         }
-        Promise.all(promises)
+        await Promise.all(promises)
             .then((ingredientsFromDatastore) => {
                 for (i = 0; i < recipe.ingredients.length; i++) {
                     recipe.ingredients[i].name = ingredientsFromDatastore[i].name;
@@ -82,13 +82,12 @@ class RecipeHandlers {
                 return res.status(500).send({ 'Error': 'failure while getting ingredient names from datastore: ' + err });
             });
 
-        //Return the recipe
         recipe.self = generateSelf(ROOT_URL, '/recipes/' + recipe.id);
         return res.status(200).send(JSON.stringify(recipe));
     }
 
     async getRecipes(req, res) {
-        validJWT = true;
+        let validJWT = true;
         if (req.error) {
             validJWT = false;
         }
@@ -114,14 +113,14 @@ class RecipeHandlers {
         const dataInfo = data[1];
 
         //Get the ingredient names and self for the recipes
-        for (var i = 0; i < recipes.length; i++) {
+        for (let i = 0; i < recipes.length; i++) {
             let promises = [];
-            for (j = 0; i < recipes[i].ingredients.length; j++) {
+            for (let j = 0; j < recipes[i].ingredients.length; j++) {
                 promises.push(gCloudDatastore.getDoc(recipes[i].ingredients[j].id, INGREDIENT_DATASTORE_KEY));
             }
-            Promise.all(promises)
+            await Promise.all(promises)
                 .then((ingredientsFromDatastore) => {
-                    for (j = 0; j < recipe.ingredients.length; j++) {
+                    for (let j = 0; j < recipes[i].ingredients.length; j++) {
                         recipes[i].ingredients[j].name = ingredientsFromDatastore[j].name;
                     }
                 })
@@ -135,8 +134,8 @@ class RecipeHandlers {
         let retJSON = {
             "recipes": recipes
         };
-        if (pageInfo.moreResults === true) {
-            retJSON.next = ROOT_URL + '/recipes?endCursor=' + pageInfo.endCursor;
+        if (dataInfo.moreResults === true) {
+            retJSON.next = ROOT_URL + '/recipes?endCursor=' + dataInfo.endCursor;
         }
 
         return res.status(200).send(JSON.stringify(retJSON));
@@ -173,7 +172,7 @@ class RecipeHandlers {
         }
 
         //Save the recipe
-        replacementRecipe = {
+        let replacementRecipe = {
             "name": req.body.name,
             "description": req.body.description,
             "instructions": req.body.instructions,
@@ -215,10 +214,10 @@ class RecipeHandlers {
 
         //Save the recipe
         let isPublic = false;
-        if (req.body.public === null) {
+        if (req.body.public !== null) {
             isPublic = req.body.public;
         }
-        updatedRecipe = {
+        let updatedRecipe = {
             "name": req.body.name || recipe.name,
             "description": req.body.description || recipe.description,
             "instructions": req.body.instructions || recipe.instructions,
@@ -261,18 +260,18 @@ class RecipeHandlers {
         //Delete the recipe from any ingredients using it
         let ingredients;
         try {
-            ingredients = gCloudDatastore.getDocsWithAttribute(RECIPE_DATASTORE_KEY, 'owner_id', '=', req.payload.sub);
+            ingredients = await gCloudDatastore.getDocsWithAttribute(INGREDIENT_DATASTORE_KEY, 'owner_id', '=', req.payload.sub);
         } catch (err) {
             return res.status(500).send({'Error': 'failed to search for ingredients owned by the user'});
         }
         let promises = [];
-        for (ingredient in ingredients) {
-            for (var i = ingredient.recipes.length; i >= 0; i--) {
+        for (let ingredient of ingredients) {
+            for (var i = ingredient.recipes.length - 1; i >= 0; i--) {
                 if (ingredient.recipes[i].id === req.params.recipe_id) {
                     ingredient.recipes.splice(i, 1);
                 }
             }
-            updatedIngredient = {
+            let updatedIngredient = {
                 "name": ingredient.name,
                 "stock": ingredient.stock,
                 "owner_id": ingredient.owner_id,
@@ -326,8 +325,8 @@ class RecipeHandlers {
         }
 
         //Verify the ingredient is not already linked to this recipe
-        for (ingredient in recipe.ingredients) {
-            if (ingredient.id === req.params.ingredient_id) {
+        for (let recipeIngredient of recipe.ingredients) {
+            if (recipeIngredient.id === req.params.ingredient_id) {
                 return res.status(403).send({
                     'Error': 'The ingredient with this ingredient_id is already linked to the recipe with this recipe_id. \
                     Use PUT or PATCH to update the ingredient quantity'

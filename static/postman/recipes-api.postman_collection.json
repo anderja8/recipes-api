@@ -488,7 +488,7 @@
 						"id": "15846dd5-9307-4d37-afdb-d80937373cf1",
 						"exec": [
 							"pm.test(\"401 status code\", function () {",
-							"    pm.response.to.have.status(403);",
+							"    pm.response.to.have.status(401);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -523,7 +523,7 @@
 			"response": []
 		},
 		{
-			"name": "create espresso ingredient invalid auth Copy",
+			"name": "create espresso ingredient invalid auth",
 			"event": [
 				{
 					"listen": "test",
@@ -1296,7 +1296,7 @@
 			"response": []
 		},
 		{
-			"name": "get latte recipe - invalid auth",
+			"name": "get iced latte recipe - invalid auth",
 			"event": [
 				{
 					"listen": "test",
@@ -1325,13 +1325,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{ROOT_URL}}/recipes/{{latte_id}}",
+					"raw": "{{ROOT_URL}}/recipes/{{iced_latte_id}}",
 					"host": [
 						"{{ROOT_URL}}"
 					],
 					"path": [
 						"recipes",
-						"{{latte_id}}"
+						"{{iced_latte_id}}"
 					]
 				}
 			},
@@ -1605,7 +1605,7 @@
 			"response": []
 		},
 		{
-			"name": "all public recipes",
+			"name": "all public recipes no auth",
 			"event": [
 				{
 					"listen": "test",
@@ -1757,7 +1757,7 @@
 						"exec": [
 							"pm.test(\"204 status code\", function () {",
 							"    //Check for success 200 response code",
-							"    pm.response.to.have.status(200);",
+							"    pm.response.to.have.status(204);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1765,16 +1765,6 @@
 				}
 			],
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{JWT_2}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
@@ -2462,7 +2452,7 @@
 				}
 			],
 			"request": {
-				"method": "PUT",
+				"method": "DELETE",
 				"header": [],
 				"url": {
 					"raw": "{{ROOT_URL}}/ingredients",
@@ -2848,12 +2838,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{ROOT_URL}}/recipes",
+					"raw": "{{ROOT_URL}}/ingredients",
 					"host": [
 						"{{ROOT_URL}}"
 					],
 					"path": [
-						"recipes"
+						"ingredients"
 					]
 				}
 			},
@@ -2890,6 +2880,73 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "2a3d3285-0e29-4541-a20d-06ef50789477",
+			"key": "latte_id",
+			"value": ""
+		},
+		{
+			"id": "18d03f4c-be8f-4912-a5c8-bbf6723e2cca",
+			"key": "user_id_1",
+			"value": ""
+		},
+		{
+			"id": "4d845c8d-23d7-4ad3-b025-5f9dc353c4f3",
+			"key": "iced_latte_id",
+			"value": ""
+		},
+		{
+			"id": "064ed55e-a75e-435a-b1e1-22925ebe5fc7",
+			"key": "espresso_id",
+			"value": ""
+		},
+		{
+			"id": "eb0cac6a-c8b2-41a3-adba-791ba55dea0a",
+			"key": "milk_id",
+			"value": ""
+		},
+		{
+			"id": "5c425a8e-709c-404b-909b-b529fc478a6f",
+			"key": "caramel_id",
+			"value": ""
+		},
+		{
+			"id": "0f4ff071-d933-43d2-8810-dc28348b8d95",
+			"key": "chocolate_id",
+			"value": ""
+		},
+		{
+			"id": "863f5d64-3db6-4544-aad0-ca88d36c371e",
+			"key": "ice_id",
+			"value": ""
+		},
+		{
+			"id": "f97f1f45-649a-45c7-abb4-59e5ec3a24bd",
+			"key": "liver_id",
+			"value": ""
+		},
+		{
+			"id": "e872854f-03da-4e3f-b11a-510cfdaa4c43",
+			"key": "oat_milk_id",
+			"value": ""
+		},
+		{
+			"id": "37d48f4d-0a70-4bfc-9094-936e11321a9a",
+			"key": "next_ingredient_page",
+			"value": ""
+		},
+		{
+			"id": "841c70b4-7ee1-4091-9d46-59ade8237b3a",
+			"key": "tea_id",
+			"value": ""
+		},
+		{
+			"id": "5705f0a5-61c1-4a61-b08c-827844ad5245",
+			"key": "user_id_2",
+			"value": ""
 		}
 	],
 	"protocolProfileBehavior": {}

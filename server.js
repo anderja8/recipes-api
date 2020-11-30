@@ -62,15 +62,17 @@ router.get('/oauth2callback', handleCallback);
 
 // jwt generation
 router.get('/user-info', userHandlers.getJWT);
-
-// api routes
+router.get('/logout', function(req, res) {
+    req.session.destroy();
+    return res.redirect('https://google.com/accounts/logout');
+})
 
 //users
 router.get('/users', verifyJSONAccepts, userHandlers.getUsers);
 router.delete('/users/:user_id', verifyJSONAccepts, verifyJWT, userHandlers.deleteUsers);
 
 //recipes
-router.post('/recipes', verifyJSONAccepts, verifyJWT, recipeHandlers.postRecipe);
+router.post('/recipes', verifyJSONAccepts, verifyJWT, userHandlers.addUserIfNotExists, recipeHandlers.postRecipe);
 router.get('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipe);
 router.get('/recipes', verifyJSONAccepts, verifyJWT, recipeHandlers.getRecipes);
 router.put('/recipes/:recipe_id', verifyJSONAccepts, verifyJWT, recipeHandlers.putRecipe);
@@ -82,7 +84,7 @@ router.delete('/recipes', function(req, res) {
 });
 
 //ingredients
-router.post('/ingredients', verifyJSONAccepts, verifyJWT, ingredientHandlers.postIngredient);
+router.post('/ingredients', verifyJSONAccepts, verifyJWT, userHandlers.addUserIfNotExists, ingredientHandlers.postIngredient);
 router.get('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, ingredientHandlers.getIngredient);
 router.get('/ingredients', verifyJSONAccepts, verifyJWT, ingredientHandlers.getIngredients);
 router.put('/ingredients/:ingredient_id', verifyJSONAccepts, verifyJWT, ingredientHandlers.putIngredient);

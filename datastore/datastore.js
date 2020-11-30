@@ -146,7 +146,7 @@ class GCloudDatastore {
         try {
             entities = await this.datastore.runQuery(q);
         } catch (err) {
-            return err;
+            return [];
         }
 
         return entities[0].map(this.fromDatastore);

@@ -23,28 +23,9 @@ class UserHandlers {
         }
         
         const htmlStr = _buildUserInfoHTML(sess.jwt, payload);
+        req.session.destroy();
 
         return res.status(200).send(htmlStr);
-    }
-
-    _buildUserInfoHTML(jwt, jwtPayload) {
-        let htmlStr = '<!DOCTYPE html>\n<html>\n'
-        htmlStr += '<head>\n<meta charset="UTF-8">\n<title>Secure Boat API</title>\n<link rel="stylesheet" href="/css/style.css">\n</head>\n'
-        htmlStr += '<body>\n';
-        if (jwtPayload.name) {
-            htmlStr += '<h3>' + jwtPayload.name + ' User Info</h3>';
-        } else {
-            htmlStr += '<h3>User Info</h3>';
-        }
-        htmlStr += '<h4>ID</h4>';
-        htmlStr += '<p>' + jwtPayload.sub + '</p>';
-        htmlStr += '<h4>JWT</h4>';
-        htmlStr += '<p>' + jwt + '</p>';
-        htmlStr += '</ul>';
-        htmlStr += '<p>As explained in the homepage site description, this page is simply displaying the user\'s JWT back to them for future';
-        htmlStr += ' use with this API. Click <a href="/">here</a> to return to the homepage</p>\n';
-        htmlStr += '</body>\n</html>'
-        return htmlStr;
     }
 
     async getUsers(req, res) {
@@ -57,11 +38,11 @@ class UserHandlers {
 
         //special handling for this array because we are using the sub as the id
         let cleanedUsers = [];
-        for (user in users) {
-            cleanedUser = {
+        for (let user of users) {
+            let cleanedUser = {
                 "id": user.sub,
                 "given_name": user.given_name,
-                "last_name": user.last_name,
+                "family_name": user.family_name,
             };
             cleanedUsers.push(cleanedUser);
         }
@@ -75,15 +56,16 @@ class UserHandlers {
         }
 
         // Verify the user exists and is matches the JWT
-        let user;
+        let users;
         try {
-            user = await gCloudDatastore.getDocsWithAttribute(USER_DATASTORE_KEY, 'sub', '=', req.params.user_id);
+            users = await gCloudDatastore.getDocsWithAttribute(USER_DATASTORE_KEY, 'sub', '=', req.params.user_id);
         } catch (err) {
             return res.status(500).send({'Error': 'failed to search for user in the datastore: ' + err});
         }
-        if (!user) {
+        if (!users || users.length === 0) {
             return res.status(404).send({'Error': 'No user with this user_id exists'});
         }
+        const user = users[0];
         if (user.sub !== req.payload.sub) {
             return res.status(403).send({'Error': 'The user with this user_id does not match the JWT'});
         }
@@ -102,21 +84,67 @@ class UserHandlers {
         } catch (err) {
             return res.status(500).send({'Error': 'failed to search for ingredients in the datastore: ' + err});
         }
-        for (recipe in recipes) {
+        for (let recipe of recipes) {
             promises.push(gCloudDatastore.deleteDoc(recipe.id, RECIPE_DATASTORE_KEY));
         }
-        for (ingredient in ingredients) {
+        for (let ingredient of ingredients) {
             promises.push(gCloudDatastore.deleteDoc(ingredient.id, INGREDIENT_DATASTORE_KEY));
         }
         promises.push(gCloudDatastore.deleteDoc(user.id, USER_DATASTORE_KEY));
-        Promise.all(promises)
-            .then(() => {
-                return res.status(204).send();
-            })
+        await Promise.all(promises)
             .catch((err) => {
                 return res.status(500).send({'Error': 'failure while deleting docs from datastore: ' + err});
             });
+        return res.status(204).send();
     }
+
+    async addUserIfNotExists(req, res, next) {
+        //Verify JWT was OK
+        if (req.error) {
+            return res.status(401).send({'Error': req.error});
+        }
+
+        let docs;
+        try {
+            docs = await gCloudDatastore.getDocsWithAttribute(USER_DATASTORE_KEY, 'sub', '=', req.payload.sub);
+        } catch (err) {
+            return res.status(500).send({'Error': 'failed to search for user in the datastore ' + err});
+        }
+
+        if (docs.length === 0) {
+            let newUser = {
+                "given_name": req.payload.given_name || "",
+                "family_name": req.payload.family_name || "",
+                "sub": req.payload.sub,
+            }
+            try {
+                await gCloudDatastore.saveDoc(newUser, USER_DATASTORE_KEY);
+            } catch (err) {
+                return res.status(500).send({'Error': 'failed to save new user to datastore ' + err})
+            }
+        }
+        return next();
+    }
+}
+
+function _buildUserInfoHTML(jwt, jwtPayload) {
+    let htmlStr = '<!DOCTYPE html>\n<html>\n'
+    htmlStr += '<head>\n<meta charset="UTF-8">\n<title>Secure Boat API</title>\n<link rel="stylesheet" href="/css/style.css">\n</head>\n'
+    htmlStr += '<body>\n';
+    if (jwtPayload.name) {
+        htmlStr += '<h3>' + jwtPayload.name + ' User Info</h3>';
+    } else {
+        htmlStr += '<h3>User Info</h3>';
+    }
+    htmlStr += '<h4>ID</h4>';
+    htmlStr += '<p>' + jwtPayload.sub + '</p>';
+    htmlStr += '<h4>JWT</h4>';
+    htmlStr += '<p>' + jwt + '</p>';
+    htmlStr += '</ul>';
+    htmlStr += '<p>As explained in the homepage site description, this page is simply displaying the user\'s JWT back to them for future';
+    htmlStr += ' use with this API. Click <a href="/">here</a> to return to the homepage</p>\n';
+    htmlStr += '</body>\n</html>'
+    return htmlStr;
 }
 
 module.exports = { UserHandlers }

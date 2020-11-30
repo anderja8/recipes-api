@@ -24,8 +24,8 @@ class IngredientHandlers {
         }
 
         //Save the ingredient
-        date = new Date();
-        newIngredient = {
+        let date = new Date();
+        let newIngredient = {
             "name": req.body.name,
             "stock": req.body.stock,
             "owner_id": req.payload.sub,
@@ -72,9 +72,9 @@ class IngredientHandlers {
         for (var i = 0; i < ingredient.recipes.length; i++) {
             promises.push(gCloudDatastore.getDoc(ingredient.recipes[i].id, RECIPE_DATASTORE_KEY));
         }
-        Promise.all(promises)
+        await Promise.all(promises)
             .then((recipesFromDataStore) => {
-                for (i = 0; i < ingredient.recipes.length; i++) {
+                for (let i = 0; i < ingredient.recipes.length; i++) {
                     ingredient.recipes[i].name = recipesFromDataStore[i].name;
                 }
             })
@@ -105,29 +105,29 @@ class IngredientHandlers {
         const dataInfo = data[1];
 
         //Get the recipe names and self for the ingredients
-        for (var i = 0; i < ingredients.length; i++) {
+        for (let i = 0; i < ingredients.length; i++) {
             let promises = [];
-            for (j = 0; i < ingredients[i].recipes.length; j++) {
+            for (let j = 0; j < ingredients[i].recipes.length; j++) {
                 promises.push(gCloudDatastore.getDoc(ingredients[i].recipes[j].id, RECIPE_DATASTORE_KEY));
             }
-            Promise.all(promises)
+            await Promise.all(promises)
                 .then((recipesFromDataStore) => {
-                    for (j = 0; j < recipe.ingredients.length; j++) {
-                        recipes[i].ingredients[j].name = recipesFromDataStore[j].name;
+                    for (let j = 0; j < ingredients[i].recipes.length; j++) {
+                        ingredients[i].recipes[j].name = recipesFromDataStore[j].name;
                     }
                 })
                 .catch((err) => {
                     return res.status(500).send({ 'Error': 'failure while getting ingredient names from datastore: ' + err });
                 });
-            recipes[i].self = generateSelf(ROOT_URL, '/recipes/' + recipes[i].id);
+            ingredients[i].self = generateSelf(ROOT_URL, '/recipes/' + ingredients[i].id);
         }
 
         //Create the json body to return
         let retJSON = {
             "ingredients": ingredients
         };
-        if (pageInfo.moreResults === true) {
-            retJSON.next = ROOT_URL + '/ingredients?endCursor=' + pageInfo.endCursor;
+        if (dataInfo.moreResults === true) {
+            retJSON.next = ROOT_URL + '/ingredients?endCursor=' + dataInfo.endCursor;
         }
 
         res.status(200).send(JSON.stringify(retJSON));
@@ -164,8 +164,8 @@ class IngredientHandlers {
         }
 
         //Save the ingredient
-        date = new Date();
-        replacementIngredient = {
+        let date = new Date();
+        let replacementIngredient = {
             "name": req.body.name,
             "stock": req.body.stock,
             "owner_id": req.payload.sub,
@@ -205,8 +205,8 @@ class IngredientHandlers {
         }
 
         //Save the ingredient
-        date = new Date();
-        updateIngredient = {
+        let date = new Date();
+        let updateIngredient = {
             "name": req.body.name || ingredient.name,
             "stock": req.body.stock || ingredient.stock,
             "owner_id": req.payload.sub,
@@ -215,7 +215,7 @@ class IngredientHandlers {
         };
         let updatedIngredient;
         try {
-            updatedIngredient = await gCloudDatastore.replaceDoc(ingredient.id, updatedIngredient, INGREDIENT_DATASTORE_KEY);
+            updatedIngredient = await gCloudDatastore.replaceDoc(ingredient.id, updateIngredient, INGREDIENT_DATASTORE_KEY);
         } catch (err) {
             return res.status(500).send({'Error': 'failed to save the updated ingredient to the datastore: ' + err});
         }
@@ -248,18 +248,18 @@ class IngredientHandlers {
         //Delete the ingredient from any recipes using it
         let recipes;
         try {
-            recipes = gCloudDatastore.getDocsWithAttribute(RECIPE_DATASTORE_KEY, 'owner_id', '=', req.payload.sub);
+            recipes = await gCloudDatastore.getDocsWithAttribute(RECIPE_DATASTORE_KEY, 'owner_id', '=', req.payload.sub);
         } catch (err) {
             return res.status(500).send({'Error': 'failed to search for recipes owned by the user'});
         }
         let promises = [];
-        for (recipe in recipes) {
-            for (var i = recipe.ingredients.length; i >= 0; i--) {
+        for (let recipe of recipes) {
+            for (var i = recipe.ingredients.length - 1; i >= 0; i--) {
                 if (recipe.ingredients[i].id === req.params.ingredient_id) {
                     recipe.ingredients.splice(i, 1);
                 }
             }
-            updatedRecipe = {
+            let updatedRecipe = {
                 "name": recipe.name,
                 "description": recipe.description,
                 "instructions": recipe.instructions,
@@ -272,7 +272,7 @@ class IngredientHandlers {
         
         //Delete the ingredient itself and return
         promises.push(gCloudDatastore.deleteDoc(ingredient.id, INGREDIENT_DATASTORE_KEY));
-        Promise.all(promises)
+        await Promise.all(promises)
         .then(() => {
             return res.status(204).send();
         })
