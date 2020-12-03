@@ -19,7 +19,7 @@ async function verifyJWT(req, res, next) {
     }
     var authArr = authorization.split(' ');
     if (authArr[0].trim() != "Bearer") {
-        req.error = 'malformatted authorization header, should be "authorization":"Bearer <token>"';
+        req.error = 'malformed authorization header, should be "authorization":"Bearer <token>"';
         return next();
     } else if (authArr.length < 2) {
         req.error = 'missing JWT in authorization header';
