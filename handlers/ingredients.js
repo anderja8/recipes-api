@@ -179,7 +179,7 @@ class IngredientHandlers {
             return res.status(500).send({'Error': 'failed to save the updated ingredient to the datastore: ' + err});
         }
         replacedIngredient.self = generateSelf(ROOT_URL, '/ingredients/' + replacedIngredient.id);
-        return res.status(201).send(JSON.stringify(replacedIngredient));
+        return res.status(200).send(JSON.stringify(replacedIngredient));
     }
 
     async patchIngredient(req, res) {
@@ -220,7 +220,7 @@ class IngredientHandlers {
             return res.status(500).send({'Error': 'failed to save the updated ingredient to the datastore: ' + err});
         }
         updatedIngredient.self = generateSelf(ROOT_URL, '/ingredients/' + updatedIngredient.id);
-        return res.status(201).send(JSON.stringify(updatedIngredient));
+        return res.status(200).send(JSON.stringify(updatedIngredient));
     }
 
     async deleteIngredient(req, res) {
