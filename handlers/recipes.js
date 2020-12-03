@@ -187,7 +187,7 @@ class RecipeHandlers {
             return res.status(500).send({ 'Error': 'failed to save the updated recipe to the datastore: ' + err });
         }
         replacedRecipe.self = generateSelf(ROOT_URL, '/recipes/' + replacedRecipe.id);
-        return res.status(201).send(JSON.stringify(replacedRecipe));
+        return res.status(200).send(JSON.stringify(replacedRecipe));
     }
 
     async patchRecipe(req, res) {
@@ -232,7 +232,7 @@ class RecipeHandlers {
             return res.status(500).send({ 'Error': 'failed to save the updated recipe to the datastore: ' + err });
         }
         updateRecipe.self = generateSelf(ROOT_URL, '/recipes/' + updateRecipe.id);
-        return res.status(201).send(JSON.stringify(updateRecipe));
+        return res.status(200).send(JSON.stringify(updateRecipe));
     }
 
     async deleteRecipe(req, res) {
