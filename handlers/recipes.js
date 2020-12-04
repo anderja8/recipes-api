@@ -327,7 +327,7 @@ class RecipeHandlers {
         //Verify the ingredient is not already linked to this recipe
         for (let recipeIngredient of recipe.ingredients) {
             if (recipeIngredient.id === req.params.ingredient_id) {
-                return res.status(403).send({
+                return res.status(400).send({
                     'Error': 'The ingredient with this ingredient_id is already linked to the recipe with this recipe_id. \
                     Use PUT or PATCH to update the ingredient quantity'
                 });
