@@ -14,7 +14,7 @@
 						"id": "545ce5f9-2cc7-4f49-9d4a-a893bd3297ba",
 						"exec": [
 							"pm.collectionVariables.set(\"latte_id\", pm.response.json().id);",
-							"pm.collectionVariables.set(\"user_id_1\", pm.response.json().owner_id);",
+							"pm.environment.set(\"user_id1\", pm.response.json().owner_id);",
 							"",
 							"pm.test(\"201 status code\", function () {",
 							"    pm.response.to.have.status(201);",
@@ -136,7 +136,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{INVALID_JWT}}",
+							"value": "{{invalid_jwt}}",
 							"type": "string"
 						}
 					]
@@ -179,8 +179,8 @@
 					"script": {
 						"id": "5f8ddb0f-1021-4ea1-9711-a9315ee0c928",
 						"exec": [
-							"pm.test(\"201 status code\", function () {",
-							"    pm.response.to.have.status(201);",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -247,7 +247,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -291,8 +291,8 @@
 					"script": {
 						"id": "b26aaaed-923e-43a3-9adb-a6dd89546475",
 						"exec": [
-							"pm.test(\"201 status code\", function () {",
-							"    pm.response.to.have.status(201);",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -359,7 +359,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -544,7 +544,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{INVALID_JWT}}",
+							"value": "{{invalid_jwt}}",
 							"type": "string"
 						}
 					]
@@ -1317,7 +1317,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -1505,7 +1505,7 @@
 						"id": "89baad2c-e6b7-4b67-b3e6-b10271a457d3",
 						"exec": [
 							"pm.collectionVariables.set(\"tea_id\", pm.response.json().id);",
-							"pm.collectionVariables.set(\"user_id_2\", pm.response.json().owner_id);",
+							"pm.environment.set(\"user_id2\", pm.response.json().owner_id);",
 							"",
 							"pm.test(\"201 status code\", function () {",
 							"    //Check for success 200 response code",
@@ -1523,7 +1523,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -1573,7 +1573,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -1678,7 +1678,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{INVALID_JWT}}",
+							"value": "{{invalid_jwt}}",
 							"type": "string"
 						}
 					]
@@ -1728,7 +1728,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -1914,9 +1914,9 @@
 					"script": {
 						"id": "b78ccbe4-67e7-48f5-a6b6-cb7fa4041c3c",
 						"exec": [
-							"pm.test(\"201 status code\", function () {",
+							"pm.test(\"200 status code\", function () {",
 							"    //Check for success 200 response code",
-							"    pm.response.to.have.status(201);",
+							"    pm.response.to.have.status(200);",
 							"});",
 							"",
 							"",
@@ -1979,7 +1979,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -2016,8 +2016,8 @@
 					"script": {
 						"id": "685e7848-3de0-4701-b61d-e159efeaaece",
 						"exec": [
-							"pm.test(\"201 status code\", function () {",
-							"    pm.response.to.have.status(201);",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
 							"});",
 							"",
 							"",
@@ -2080,7 +2080,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -2131,7 +2131,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -2312,7 +2312,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -2628,7 +2628,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -2643,13 +2643,13 @@
 					}
 				],
 				"url": {
-					"raw": "{{ROOT_URL}}/users/{{user_id_2}}",
+					"raw": "{{ROOT_URL}}/users/{{user_id2}}",
 					"host": [
 						"{{ROOT_URL}}"
 					],
 					"path": [
 						"users",
-						"{{user_id_2}}"
+						"{{user_id2}}"
 					]
 				}
 			},
@@ -2681,7 +2681,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{JWT_2}}",
+							"value": "{{jwt2}}",
 							"type": "string"
 						}
 					]
@@ -2739,13 +2739,13 @@
 					}
 				],
 				"url": {
-					"raw": "{{ROOT_URL}}/users/{{user_id_1}}",
+					"raw": "{{ROOT_URL}}/users/{{user_id1}}",
 					"host": [
 						"{{ROOT_URL}}"
 					],
 					"path": [
 						"users",
-						"{{user_id_1}}"
+						"{{user_id1}}"
 					]
 				}
 			},
@@ -2855,7 +2855,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "{{JWT_1}}",
+				"value": "{{jwt1}}",
 				"type": "string"
 			}
 		]
@@ -2884,68 +2884,58 @@
 	],
 	"variable": [
 		{
-			"id": "2a3d3285-0e29-4541-a20d-06ef50789477",
+			"id": "67dd26dc-fa41-459b-964f-6a1b656f7ce8",
 			"key": "latte_id",
 			"value": ""
 		},
 		{
-			"id": "18d03f4c-be8f-4912-a5c8-bbf6723e2cca",
-			"key": "user_id_1",
-			"value": ""
-		},
-		{
-			"id": "4d845c8d-23d7-4ad3-b025-5f9dc353c4f3",
+			"id": "5d512cdd-12ae-4d1a-8fd2-949639f8a070",
 			"key": "iced_latte_id",
 			"value": ""
 		},
 		{
-			"id": "064ed55e-a75e-435a-b1e1-22925ebe5fc7",
+			"id": "74d82165-dd51-4c9f-8329-0aeff500f582",
 			"key": "espresso_id",
 			"value": ""
 		},
 		{
-			"id": "eb0cac6a-c8b2-41a3-adba-791ba55dea0a",
+			"id": "124cd7d1-8fe4-4f21-b204-633e384a0d29",
 			"key": "milk_id",
 			"value": ""
 		},
 		{
-			"id": "5c425a8e-709c-404b-909b-b529fc478a6f",
+			"id": "89d2152e-6b52-4c19-b46c-2a8ce8ae3f8d",
 			"key": "caramel_id",
 			"value": ""
 		},
 		{
-			"id": "0f4ff071-d933-43d2-8810-dc28348b8d95",
+			"id": "a76e68de-0a09-44b6-b596-1cd868842a18",
 			"key": "chocolate_id",
 			"value": ""
 		},
 		{
-			"id": "863f5d64-3db6-4544-aad0-ca88d36c371e",
+			"id": "f754cb42-cbab-4bbd-bedf-246367d08635",
 			"key": "ice_id",
 			"value": ""
 		},
 		{
-			"id": "f97f1f45-649a-45c7-abb4-59e5ec3a24bd",
+			"id": "929f128d-18c6-4dbd-a2c9-b87fffd23a00",
 			"key": "liver_id",
 			"value": ""
 		},
 		{
-			"id": "e872854f-03da-4e3f-b11a-510cfdaa4c43",
+			"id": "f4e54989-e68b-4691-b2e9-90dd4606dac2",
 			"key": "oat_milk_id",
 			"value": ""
 		},
 		{
-			"id": "37d48f4d-0a70-4bfc-9094-936e11321a9a",
+			"id": "b9436aeb-c4da-4cd2-be91-cd5fb72ff98c",
 			"key": "next_ingredient_page",
 			"value": ""
 		},
 		{
-			"id": "841c70b4-7ee1-4091-9d46-59ade8237b3a",
+			"id": "210bb801-9243-4053-bb6e-622426cd1442",
 			"key": "tea_id",
-			"value": ""
-		},
-		{
-			"id": "5705f0a5-61c1-4a61-b08c-827844ad5245",
-			"key": "user_id_2",
 			"value": ""
 		}
 	],

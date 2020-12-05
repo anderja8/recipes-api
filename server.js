@@ -51,11 +51,9 @@ router.get('/pm-env', function(req, res) {
 router.get('/pm-collection', function(req, res) {
     res.status(200).sendFile(__dirname + "/static/postman/recipes-api.postman_collection.json");
 });
-/*
 router.get('/documentation', function(req, res) {
-    res.status(200).sendFile(__dirname + "/static/recipes_api_documentation.pdf");
+    res.status(200).sendFile(__dirname + "/static/recipes-api.pdf");
 });
-*/
 
 // oauth callback
 router.get('/oauth2callback', handleCallback);
