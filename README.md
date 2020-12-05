@@ -1,10 +1,9 @@
 # Usage
-The purpose of this app is to demonstrate use of authentication within a typical CRD api, with this app being the client and Google being the auth server.
-This app will redirect the user to Google, where they can login with a google account and get a JWT. With this JWT, they can create boats, view their private
-boats, and delete their boats. More information is on the homepage of the app itself.
-[here](https://developers.google.com/identity/protocols/OAuth2WebServer).\
+The purpose of this app is to demonstrate a fully functional google cloud engine CRUD app. This app does this by forming as an API where users can store
+recipes and ingredients, and browse other user's recipes. Full documentation of functionality can be found at the root url and in the documentation pdf.
+Using this API requires a google account. You can review how your data will be used at the /privacy endpoint.
 \
-You will then need to create a config.json file with the following format:
+To run this app, you will then need to create a config.json file with the following format:
 ```
 {
 	"CLIENT_ID": <your app's client id>,
@@ -12,12 +11,12 @@ You will then need to create a config.json file with the following format:
 	"PROJECT_ID": <your app's project id>,
 	"GCLOUD_PROJECT": <your app's gcloud project name, should be the same as project id>,
 	"DATA_BACKEND": "datastore"
+	"ROOT_URL": "Either "http://localhost:8080" or your google cloud app's url
 }
 ```
 
 # Running locally
-Change the ROOT_URL constant in auth.js to `http:localhost:8080` and ensure that redirection to localhost is configured in your Google auth provider account. Then start up
-the gcloud datastore emulator with `gcloud beta emulators datastore start --no-store-on-disk`. Then, in a seperate terminal, run `$(gcloud beta emulators datastore env-init)`, followed by `npm start server.js`
+Ensure the ROOT_URL constant in config.json is set to `http:localhost:8080` and that redirection to localhost is configured in your Google auth provider account. Then start up the gcloud datastore emulator with `gcloud beta emulators datastore start --no-store-on-disk`. Then, in a seperate terminal, run `$(gcloud beta emulators datastore env-init)`, followed by `npm start`
 
 # Deploying to Google App Engine
 Simply run `gcloud app deploy --project <your GAE project ID>` to deploy this app to the google app engine. Alternatively, you can set the default project with `gcloud config set project <your GAE project ID>` and then run `gcloud app deploy`. Run `gcloud app browse` to open the app in your browser.
