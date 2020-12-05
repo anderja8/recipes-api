@@ -1,3 +1,7 @@
+# Link
+At least for now, you can view this app running on Google's
+app engine at https://anderja8-recipes-api.appspot.com
+
 # Usage
 The purpose of this app is to demonstrate a fully functional google cloud engine CRUD app. This app does this by forming as an API where users can store
 recipes and ingredients, and browse other user's recipes. Full documentation of functionality can be found at the root url and in the documentation pdf.
